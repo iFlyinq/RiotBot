@@ -46,8 +46,8 @@ import java.util.regex.Pattern;
  */
 public class RiotCommandExecution extends MessageReceivedEvent {
 
-    private RiotCommand riotCommand;
-    private String[] arguments;
+    private final RiotCommand riotCommand;
+    private final String[] arguments;
 
     /**
      * Instantiates a new Riot command execution.
@@ -125,6 +125,7 @@ public class RiotCommandExecution extends MessageReceivedEvent {
      * @return the argument
      */
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     public <T> T getArgument(String name, Class<? extends T> tClass) {
         Method method;
         Optional<Method> optional = Arrays.stream(tClass.getDeclaredMethods())

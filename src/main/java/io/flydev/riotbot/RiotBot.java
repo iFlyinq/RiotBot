@@ -30,8 +30,7 @@ import com.google.gson.JsonObject;
 import io.flydev.riotbot.commands.RiotCommandInformation;
 import io.flydev.riotbot.commands.RiotCommandListener;
 import lombok.SneakyThrows;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import org.reflections.Reflections;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
@@ -58,12 +57,11 @@ public class RiotBot {
         secrets = gson.fromJson(new InputStreamReader(Objects.requireNonNull(RiotBot.class.getClassLoader().getResourceAsStream("secrets.json"))), JsonObject.class);
 
         //Build a new JDA Instance
-        JDA jda = JDABuilder.createDefault(secrets.getAsJsonObject("discord").get("bot-token").getAsString())
-                .addEventListeners(new RiotCommandListener())
-                .build();
+        DefaultShardManagerBuilder shardManager = DefaultShardManagerBuilder.createDefault(secrets.getAsJsonObject("discord").get("bot-token").getAsString());
+        shardManager.addEventListeners(new RiotCommandListener());
 
         //Wait till the bot is ready
-        jda.awaitReady();
+        System.out.printf("Started with %s shards%n", shardManager.build().getShards().size());
 
         //Disable the logger of Reflections
         Reflections.log = null;
